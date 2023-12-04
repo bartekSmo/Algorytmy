@@ -1,0 +1,71 @@
+import java.util.ArrayList;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<String> nazwiska = new ArrayList<>();
+        nazwiska.add("cba");
+        nazwiska.add("caa");
+        nazwiska.add("afa");
+        nazwiska.add("adf");
+        Main countingSortObject = new Main();
+        countingSortObject.radixSort(nazwiska,122, maxLentgh(nazwiska) );
+    }
+    public static int maxLentgh(ArrayList<String> nazwiska){
+        int max = 0;
+        for( String nazwisko : nazwiska){
+            if(nazwisko.length()>max){
+                max=nazwisko.length();
+            }
+        }
+        return  max;
+    }
+    public ArrayList<String> countingSort(ArrayList<String>nazwiska,int zakresZ,int ktoraLitera){
+        ArrayList<String>tablicaWynikowa = new ArrayList<>();
+        ArrayList<Integer>tablicaLicznikow = new ArrayList<>();
+        //inicjowanie tablicy 0
+        for(int i = 0; i <= zakresZ; i++){//inicjujemy tablice 0 i tablice wynikowa
+            tablicaLicznikow.add(0);
+            tablicaWynikowa.add("");
+        }
+        //dodawanie ile jest danych liter
+        for (String nazwisko : nazwiska){
+            int charValue = nazwisko.charAt(ktoraLitera);// pobiera wartosc litery ze slowa na inta zeby dodac wartosc litery jako index w tablicy Licznikow
+            tablicaLicznikow.set(charValue,tablicaLicznikow.get(charValue)+1); // dodajemy w tablicy Licznikow na indexie wartosci litery(charValue)  +1
+        }
+        //prefix dodawanie
+        for (int i = 1; i <= zakresZ; i++){
+            tablicaLicznikow.set(i,tablicaLicznikow.get(i)+tablicaLicznikow.get( i - 1));//tablicaLicznikow na indexie i wstaw co jest na indexie i + na indexie poprzednim i-1
+        }
+        //ukladanie
+        for (int i = nazwiska.size() - 1; i >= 0; i--) {
+            String currentName = nazwiska.get(i);
+            int charValue = currentName.charAt(ktoraLitera);
+            int index = tablicaLicznikow.get(charValue) - 1;
+            tablicaWynikowa.set(index, currentName);
+            tablicaLicznikow.set(charValue, tablicaLicznikow.get(charValue) - 1);
+            // Update the counter array for the character value
+        }
+
+        show(tablicaWynikowa);
+        return tablicaWynikowa;
+    }
+
+    public void radixSort(ArrayList<String> nazwiska,int zakresZ,int maks){
+        ArrayList<String>koncowa = nazwiska;
+        show(koncowa);
+        for(int i = maks - 1; i >=0; i--){
+            System.out.println("wejscie "+( i + 1 )+" litera");
+            show(koncowa);
+            System.out.println("wyjscie "+( i + 1 )+" litera");
+            koncowa = countingSort(nazwiska,zakresZ,i);
+
+        }
+        System.out.println("WYNIK");
+        show(koncowa);
+    }
+    public void show (ArrayList<String> posortowana){
+        for( String slowo : posortowana)
+            if ((!slowo.isEmpty()))
+                System.out.println(slowo);
+    }
+}
